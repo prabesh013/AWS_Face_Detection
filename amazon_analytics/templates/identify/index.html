@@ -1,32 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
     <title>Identify</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="jumbotron">
-            <h1 class="text-center">IDENTIFICATION</h1>
-            <h3 class="text-center">By: Prabesh Nepal</h3>
-            <p class="text-center mt-4">An application that helps to identify gender, emotion, age range, any other attribute trough candidates image/photo.</p>
-        </div>
-        <form method="POST" enctype="multipart/form-data">
-            <!-- <div class="form-group"> -->
-              <!-- <label for="uploadfile">Upload An Image</label> -->
-              <!-- <input type="file" class="form-control-file" id="uploadfile"> -->
-              <!-- {{form.as_p}}  -->
-              {%csrf_token%}
-             <!-- </div> -->
-                {{form.as_p}}
+      <div class="jumbotron">
+        <h1 class="text-center">IDENTIFICATION</h1>
+        <h3 class="text-center">By: Prabesh Nepal</h3>
+        <p class="text-center mt-4">
+          An application that helps to identify gender, emotion, age range, any
+          other attribute trough candidates image/photo.
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <form method="POST" enctype="multipart/form-data">
+            {%csrf_token%} {{form.as_p}}
             <button type="submit" class="btn btn-primary mb-2">Upload</button>
           </form>
           {% if img_obj %}
           <h2>Succesfully uploaded : {{img_obj.title}}</h2>
-          <img src="{{ img_obj.image.url}}" alt="connect" style="max-height:300px; max-width: 300px;">
+          <img
+            src="{{ img_obj.image.url}}"
+            alt="uploaded-image"
+            style="max-height: 300px; max-width: 300px"
+          />
           {% endif %}
+        </div>
+        <div class="col-sm-8">
+          <h4 class="center alert alert-info">Information</h4>
+          {% if clean_data %}
+          <!-- <p>Number of Face Detected in the Image: {{ clean_data.total }}</p> -->
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Age</th>
+                <th scope="col">Emotion State with Confidence</th>
+                <th scope="col">Sunglasses</th>
+                <th scope="col">Beard</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for k,v in clean_data.items %}
+              <tr>
+                <td>{{ k }}</td>
+                <td>{{ v.gender }}</td>
+                <td>{{ v.age }}</td>
+                <td>{{ v.emotionstate }}</td>
+                <td>{{ v.sunglasses }}</td>
+                <td>{{ v.beard }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          {% endif %}
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

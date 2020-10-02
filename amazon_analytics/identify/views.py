@@ -1,18 +1,23 @@
 from django.shortcuts import render
 from . import forms
+from .recognize import rekognition
+from .cleaner import clean
+from .models import Image
 
 # Create your views here.
+
+
 def base(request):
-    # form = forms.ImageForm()
+    form = forms.ImageForm()
     if request.method == "POST":
-        form = forms.ImageForm(request.POST,request.FILES)
+        form = forms.ImageForm(request.POST, request.FILES)
         if form.is_valid():
-            # form.instance.title = "image" + str(counter)
-            # print(form.instance.title)
-            # counter = counter + 1
-            form.save()
+            data = form.save()
             img_obj = form.instance
-            return render(request, 'identify/index.html', {'form': form, 'img_obj': img_obj})
+            img = (str(data.image)).split()[0]
+            res = rekognition(img)
+            c = clean(res)
+            return render(request, 'identify/index.html', {'form': form, 'img_obj': img_obj, 'clean_data': c})
     else:
         form = forms.ImageForm()
-    return render(request,'identify/index.html',{'form':form})
+    return render(request, 'identify/index.html', {'form': form})
